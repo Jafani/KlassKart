@@ -1,0 +1,46 @@
+// =============================================================
+//  Firestore Security Rules — Klass Kart
+//  Paste this into Firebase Console → Firestore → Rules → Publish
+// =============================================================
+//
+//  Access model:
+//   - Anyone can browse products (public catalog).
+//   - Anyone can place an order (public checkout — no login).
+//   - Anyone can read an order to support order-ID tracking.
+//   - Only signed-in admins (Firebase Auth) can edit products
+//     or update/delete orders.
+//
+//  Admin = any user created in Firebase Authentication → Users.
+//  For tighter control, switch to custom claims (see bottom).
+//
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------- Products --------
+    match /products/{productId} {
+      allow read:  if true;                       // public catalog
+      allow write: if request.auth != null;       // admin-only (any signed-in user)
+    }
+
+    // -------- Orders --------
+    match /orders/{orderId} {
+      allow read:   if true;                      // public order-ID tracking
+      allow create: if request.resource.data.keys().hasAll(
+                         ['orderId','productTitle','price','customerName','customerPhone','status','createdAt'])
+                     && request.resource.data.status == 'Pending';
+      allow update, delete: if request.auth != null;   // admin-only
+    }
+  }
+}
+
+/*
+  --- HARDENING (recommended for production) ---
+  Replace `request.auth != null` with a custom-claim check so only
+  designated admins (not every Firebase Auth user) get write access:
+
+      allow write: if request.auth.token.admin == true;
+
+  Set the claim once via Firebase Admin SDK:
+      admin.auth().setCustomUserClaims(uid, { admin: true });
+*/

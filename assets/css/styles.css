@@ -1,0 +1,54 @@
+/* ===== Klass Kart custom styles ===== */
+body { font-family: 'Outfit', sans-serif; }
+
+/* Premium soft glass header */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.dark .glass-effect {
+    background: rgba(0, 0, 0, 0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Animated border around product cards */
+.animated-border-box {
+    position: relative;
+    padding: 2px;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    z-index: 1;
+}
+.animated-border-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: conic-gradient(transparent, #C5A880, transparent 30%);
+    animation: rotate-border 3s linear infinite;
+    z-index: -1;
+}
+.inner-card {
+    border-radius: calc(1.5rem - 2px);
+    height: 100%;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+}
+@keyframes rotate-border { 100% { transform: rotate(360deg); } }
+
+/* Fade-in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+
+/* Loader */
+.loader { border: 3px solid #f3f3f3; border-top: 3px solid #000; width: 24px; height: 24px; animation: spin 1s linear infinite; border-radius: 50%; }
+.dark .loader { border: 3px solid #111; border-top: 3px solid #C5A880; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
